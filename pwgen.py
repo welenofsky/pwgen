@@ -1,3 +1,4 @@
+from __future__ import print_function
 # This is a extension of the trifid cipher
 import sys
 import re
@@ -59,7 +60,11 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         pw = sys.argv[1]
     else:
-        pw = input('Please enter a password:\n')
+        if sys.version_info >= (3, 0):
+            pw = input('Please enter a password:\n')
+        else:
+            pw = raw_input('Please enter a password:\n')
+
         if len(pw.rstrip()) <= 0:
             print(
                 "I need a password to continue... "
@@ -86,7 +91,11 @@ if __name__ == "__main__":
 
     polybius = build_polybius(stripped_pw, dictionary)
 
-    website = input("What website/company is this password for?\n")
+    if sys.version_info >= (3, 0):
+        website = input("What website/company is this password for?\n")
+    else:
+        website = raw_input("What website/company is this password for?\n")
+    
 
     for c in website:
         if c not in dictionary:
