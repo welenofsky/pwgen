@@ -27,11 +27,7 @@ def build_polybius(pw, dictionary):
         sys.exit()
 
     # "quad"fid cipher
-    arr_1 = [[dictionary.pop(0) for x in range(4)] for x in range(4)]
-    arr_2 = [[dictionary.pop(0) for x in range(4)] for x in range(4)]
-    arr_3 = [[dictionary.pop(0) for x in range(4)] for x in range(4)]
-    arr_4 = [[dictionary.pop(0) for x in range(4)] for x in range(4)]
-    polybius = [arr_1, arr_2, arr_3, arr_4]
+    polybius = [[[dictionary.pop(0) for x in range(4)] for x in range(4)] for x in range(4)]
     # return the quadfid
     return polybius
 
@@ -50,7 +46,13 @@ def get_position(char, polybius):
                     return (z, x, y)
 
 
-if __name__ == "__main__":
+def get_input(message):
+    if sys.version_info >= (3,0):
+        return input(message)
+    return raw_input(message)
+
+
+def main():
     stripped_pw = ""
     new_pass = ""
     list_z = []
@@ -60,10 +62,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         pw = sys.argv[1]
     else:
-        if sys.version_info >= (3, 0):
-            pw = input('Please enter a password:\n')
-        else:
-            pw = raw_input('Please enter a password:\n')
+        pw = get_input("Please enter a password:\n")
 
         if len(pw.rstrip()) <= 0:
             print(
@@ -91,10 +90,7 @@ if __name__ == "__main__":
 
     polybius = build_polybius(stripped_pw, dictionary)
 
-    if sys.version_info >= (3, 0):
-        website = input("What website/company is this password for?\n")
-    else:
-        website = raw_input("What website/company is this password for?\n")
+    website = get_input("What website/company is this password for?\n")
     
 
     for c in website:
@@ -133,3 +129,6 @@ if __name__ == "__main__":
         print("Note: password generated did not have a number so I added one")
         new_pass += str(ord(new_pass[:1]))
         print("Generated password: %s\n" % new_pass)
+
+
+main()
