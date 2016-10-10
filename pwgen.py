@@ -2,6 +2,7 @@ from __future__ import print_function
 # This is a extension of the trifid cipher
 import sys
 import re
+import argparse
 
 # 64 character dictionary
 dictionary = (
@@ -52,16 +53,14 @@ def get_input(message):
     return raw_input(message)
 
 
-def main():
+def generate_pw(pw = None, website = None):
     stripped_pw = ""
     new_pass = ""
     list_z = []
     list_x = []
     list_y = []
 
-    if len(sys.argv) > 1:
-        pw = sys.argv[1]
-    else:
+    if not pw:
         pw = get_input("Please enter a password:\n")
 
         if len(pw.rstrip()) <= 0:
@@ -90,18 +89,18 @@ def main():
 
     polybius = build_polybius(stripped_pw, dictionary)
 
-    website = get_input("What website/company is this password for?\n")
-    
-
-    for c in website:
-        if c not in dictionary:
-            website = website.replace(c, '')
+    if not website:
+        website = get_input("What website/company is this password for?\n")
 
     if len(website.rstrip()) < 8:
         print((
             "The length of the website name is too small."
             " The website name has a 1:1 correlation to pw size."
             " Use a longer website name. Ex: www.abc.com"))
+
+    for c in website:
+        if c not in dictionary:
+            website = website.replace(c, '')
 
     for c in website:
         pos = get_position(c, polybius)
@@ -123,12 +122,24 @@ def main():
         stringofnumbers = stringofnumbers[3:]
         new_pass += polybius[z][x][y]
 
-    if re.search('[0-9]+', new_pass):
-        print("Generated password: %s\n" % new_pass)
-    else:
-        print("Note: password generated did not have a number so I added one")
-        new_pass += str(ord(new_pass[:1]))
-        print("Generated password: %s\n" % new_pass)
+    if not re.search('[0-9]+', new_pass):
+        # Add number if none were used, based on first letter in pw used
+        new_pass += str(ord(stripped_pw[:1]))
+
+    return new_pass
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Generates passwords based on the quad-fid internet friendly cipher.")
+    parser.add_argument("-p", metavar="PASSWORD", type=str,
+                        help="The master password, you only need to use one for all websites.")
+    parser.add_argument("-w", metavar="WEBSITE", type=str,
+                        help="The website you are generating the password for.")
+    args = parser.parse_args()
+
+    new_pass = generate_pw(args.p, args.w)
+
+    print(new_pass)
 
 
 main()
