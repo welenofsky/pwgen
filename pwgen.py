@@ -141,5 +141,5 @@ def main():
 
     print(new_pass)
 
-
-main()
+if __name__ == "__main__":
+    main()
